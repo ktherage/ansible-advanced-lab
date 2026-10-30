@@ -1,0 +1,65 @@
+- name: 'Deploy a simple Web Application'
+  hosts: host*
+  tasks:
+    - name: 'Install dependencies'
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - python3
+          - python3-setuptools
+          - python3-dev
+          - python3-pip
+          - python3-mysqldb
+          - python3-venv
+        state: "present"
+
+    - name: 'Install database dependencies'
+      ansible.builtin.apt:
+        name:
+         - mysql-server
+         - mysql-client
+        state: "present"
+
+    - name: 'Start database server'
+      ansible.builtin.service:
+        name: mysql
+        state: "started"
+        enabled: yes
+ 
+    - name: 'Create application database'
+      ansible.mysql.mysql_db:
+        name: employee_db
+        state: "present"
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+    - name: 'Create application database user'
+      ansible.mysql.mysql_user:
+        name: db_user
+        # bellow because mysql 8.4 mysql_native_password
+        plugin: caching_sha2_password
+        plugin_auth_string: Passw0rd
+        salt: '6dd64c18b7a5a9319a1c'
+        # end
+        priv: '*.*:ALL'
+        state: present
+        host: '%'
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+    - name: 'Install web application dependencies'
+      ansible.builtin.pip:
+        name:
+          - flask
+          - flask-mysql
+        virtualenv: /srv
+        virtualenv_command: python3 -m venv
+        state: present
+
+    - name: "Copy web application's source code"
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/mmumshad/simple-webapp/master/app.py
+        dest: /srv/app.py
+        mode: '0644'
+
+    - name: 'Run web application'
+      ansible.builtin.shell: 'FLASK_APP=/srv/app.py nohup /srv/bin/flask run --host=0.0.0.0 &'
+

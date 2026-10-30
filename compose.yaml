@@ -1,0 +1,25 @@
+name: ansible-advanced-lab
+
+services:
+  host:
+    build: .
+    deploy:
+      replicas: 2
+    networks:
+      - default
+    privileged: true
+    tty: true
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.50.0.0/16
+          gateway: 10.50.0.1
+          ip_range: 10.50.1.0/24
+
