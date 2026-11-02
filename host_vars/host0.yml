@@ -1,0 +1,4 @@
+ansible_host: 10.50.1.1
+ansible_ssh_pass: root
+ansible_ssh_user: root
+

@@ -1,0 +1,18 @@
+    - name: 'Install web application dependencies'
+      ansible.builtin.pip:
+        name:
+          - flask
+          - flask-mysql
+        virtualenv: /srv
+        virtualenv_command: python3 -m venv
+        state: present
+
+    - name: "Copy web application's source code"
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/mmumshad/simple-webapp/master/app.py
+        dest: /srv/app.py
+        mode: '0644'
+
+    - name: 'Run web application'
+      ansible.builtin.shell: 'FLASK_APP=/srv/app.py nohup /srv/bin/flask run --host=0.0.0.0 &'
+
