@@ -25,21 +25,20 @@
  
     - name: 'Create application database'
       ansible.mysql.mysql_db:
-        name: employee_db
+        name: "{{ db.name }}"
         state: "present"
         login_unix_socket: /run/mysqld/mysqld.sock
 
     - name: 'Create application database user'
       ansible.mysql.mysql_user:
-        name: db_user
+        name: "{{ db.name }}"
         # bellow because mysql 8.4 mysql_native_password
         plugin: caching_sha2_password
-        plugin_auth_string: Passw0rd
+        plugin_auth_string: "{{ db.password }}"
         salt: '6dd64c18b7a5a9319a1c'
         # end
         priv: '*.*:ALL'
         state: present
         host: '%'
         login_unix_socket: /run/mysqld/mysqld.sock
-
 
