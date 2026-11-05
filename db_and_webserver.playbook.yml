@@ -1,6 +1,6 @@
 - name: 'Deploy a simple Web Application'
   hosts: all
-  tasks:
-    - include_tasks: tasks/deploy_db.yml
-    - include_tasks: tasks/deploy_web.yml
-
+  roles:
+    - python
+    - mysql_db
+    - flask_web
