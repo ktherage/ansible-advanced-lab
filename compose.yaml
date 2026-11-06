@@ -13,6 +13,13 @@ services:
       - /run
       - /run/lock
       - /tmp
+    healthcheck:
+      # Test minimaliste absolu : ouvre et ferme immédiatement la connexion TCP
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/22'"]
+      interval: 2s       # Vérifie toutes les 2 secondes au lieu de 30
+      timeout: 2s        # N'attend pas plus de 2s la réponse
+      retries: 15        # Laisse jusqu'à 30 secondes à systemd pour démarrer SSH
+      start_period: 2s   # Donne 2 secondes d'avance à systemd avant de commencernetworks:
 
 networks:
   default:

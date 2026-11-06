@@ -1,6 +1,6 @@
 FROM ubuntu:26.04
 
-# Installation stricte du minimum : SSH, Python (requis par Ansible) et systemd
+# Installation stricte du minimum : SSH et systemd
 RUN apt-get update && apt-get install -y \
     openssh-server \
     systemd \
@@ -21,6 +21,7 @@ RUN echo 'export PS1="\[\e[32m\]\u@host-$(hostname -I | awk '\''{print $1}'\'' |
 
 EXPOSE 22
 EXPOSE 5000
+EXPOSE 3306
 
 # Permet à Docker de couper systemd proprement lors d'un "docker stop"
 STOPSIGNAL SIGRTMIN+3
