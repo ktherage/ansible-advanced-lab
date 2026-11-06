@@ -1,6 +1,0 @@
-- name: 'Deploy a simple Web Application'
-  hosts: all
-  roles:
-    - python
-    - mysql_db
-    - flask_web
